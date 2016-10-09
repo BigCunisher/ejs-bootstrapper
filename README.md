@@ -1,4 +1,4 @@
-# fibro-turtle
+# ejs-bootstrapper
 This repo contains a very simple node application for bootstrapping EJS templates.
 
 To stand up the application:
