@@ -1,28 +1,26 @@
 var fs = require('fs');
 var NodeCache = require('node-cache');
 
-var cacheTimeout = 300;
-var cacheInterval = 100;
 
-var urlCache = new NodeCache({ stdTTL: cacheTimeout, checkperiod: cacheInterval });
-var notFoundCache = new NodeCache({ stdTTL: cacheTimeout, checkperiod: cacheInterval });
-var contentPath = '/client/views/includes/content';
-var contentSuffix = '.ejs';
-var headPath = '/client/views/includes/head';
-var headSuffix = 'Head.ejs';
-var template = '/client/views/index.ejs';
+module.exports = function(app, config) {
 
-module.exports = function(app, rootDir, frontEnd) {
+  var urlCache = new NodeCache({ stdTTL: config.cacheConfig.pageUrlCacheTimeout, checkperiod: config.cacheConfig.pageUrlCacheInterval });
+  var notFoundCache = new NodeCache({ stdTTL: config.cacheConfig.pageNotFoundCacheTimeout, checkperiod: config.cacheConfig.pageNotFoundCacheInterval });
 
   app.all('*', function(request, response){
-      if(doesResourceExist(rootDir + contentPath + generateDynamicPath(request.path) + contentSuffix, request.path) && doesResourceExist(rootDir + headPath + generateDynamicPath(request.path) + headSuffix, request.path)){
-        if(!doesCacheEntryExist(urlCache, request.path)) urlCache.set(request.path, request.path, function(err, success){
-          if(err) console.log(request.path + ' failed to be added to URL cache');
+    var path = generateDynamicPath(request.path);
+
+      if(doesResourceExist(config.clientConfig.contentPath + path + config.clientConfig.contentSuffix, path) && doesResourceExist(config.clientConfig.headPath + path + config.clientConfig.headSuffix, path)){
+        if(!doesCacheEntryExist(urlCache, path)) urlCache.set(path, path, function(err, success){
+          if(err) console.log(path + ' failed to be added to URL cache');
         });
-        response.render(rootDir + template, {contentName:  generateDynamicPath(request.path)});
+        response.render(config.clientConfig.index, {
+          contentName:  path,
+          headSuffix: config.clientConfig.headSuffix
+        });
       } else {
-        if(!doesCacheEntryExist(notFoundCache, request.path)) notFoundCache.set(request.path, request.path, function(err, success){
-          if(err) console.log(request.path + ' failed to be added to 404 cache');
+        if(!doesCacheEntryExist(notFoundCache, path)) notFoundCache.set(path, path, function(err, success){
+          if(err) console.log(path + ' failed to be added to 404 cache');
         });
         response.sendStatus(404);
       }
