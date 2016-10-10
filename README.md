@@ -1,5 +1,5 @@
 # ejs-bootstrapper
-This repo contains a very simple node application for bootstrapping EJS templates.
+This repo contains a very simple node application for bootstrapping an Express Server with EJS templates.
 
 To stand up the application:
 1. run `npm install`
@@ -16,4 +16,4 @@ New content is added by convention. To add a new page to the application, for ex
 3. Add **_/foo/barHead.ejs_** to **_/client/views/includes/head_**
 4. Populate **_/foo/barHead.ejs_** with custom <head> content for the new page
 
-Pages are cached by default for 5 minutes and therefore changes can take up to 5 minutes to take affect. Set the `cacheTimeout` and the `cacheInterval` variable in the **_routes.js_** to `0` to set an unlimited cache timeout
+Pages are cached by default for 5 minutes and therefore changes can take up to 5 minutes to take affect. Set the `cacheTimeout` and the `cacheInterval` variable in **_route-config.js_** to `0` to set an unlimited cache timeout
