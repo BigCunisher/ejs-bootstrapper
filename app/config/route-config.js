@@ -1,3 +1,3 @@
 module.exports = {
-  staticURL: '/static'
+    staticURL: '/static'
 }
